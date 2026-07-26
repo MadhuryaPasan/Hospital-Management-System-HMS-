@@ -64,3 +64,20 @@ npm install -D @types/bcrypt
 - add bycrypt codes on auth.sercice.ts
 
 - refactor the user.service.ts create()
+
+- create login dto
+- update controller and service
+
+- install JWT
+```bash
+npm install @nestjs/jwt @nestjs/passport passport passport-jwt
+npm install -D @types/passport-jwt
+```
+
+- register jwtmodule on auth.module.ts
+- inject jwtservice on auth.service.ts
+- create jwt strategy
+```bash
+nest g class auth/strategies/jwt.strategy --no-spec
+```
+- add PassportStrategy to new jwt.strategy.ts
