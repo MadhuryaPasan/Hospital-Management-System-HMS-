@@ -34,15 +34,19 @@ export class UsersService {
   }
 
   // Find by email
-  findByEmail(email: string) {
-    return `This action should return user based on #${email}`;
+  async findByEmail(email: string) {
+    return this.userRepository.findOne({
+      where: { email },
+    });
+    // return `This action should return user based on #${email}`;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    return this.userRepository.delete(id);
+    // return `This action removes a #${id} user`;
   }
 }
