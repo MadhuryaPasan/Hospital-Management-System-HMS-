@@ -15,8 +15,10 @@ export class UsersService {
   ) {}
 
   // create user
-  async create(createUserDto: CreateUserDto) {
-    const user = this.userRepository.create(createUserDto);
+  // async create(createUserDto: CreateUserDto) {
+  async create(userData: Partial<User>) {
+    // Partial<User>: any subset of the user properties.
+    const user = this.userRepository.create(userData);
     return this.userRepository.save(user);
     // return 'This action adds a new user';
   }
