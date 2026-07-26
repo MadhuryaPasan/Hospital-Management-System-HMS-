@@ -21,12 +21,21 @@ export class UsersService {
     // return 'This action adds a new user';
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    return this.userRepository.find();
+    // return `This action returns all users`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number) {
+    return this.userRepository.findOne({
+      where: { id },
+    });
+    // return `This action returns a #${id} user`;
+  }
+
+  // Find by email
+  findByEmail(email: string) {
+    return `This action should return user based on #${email}`;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
