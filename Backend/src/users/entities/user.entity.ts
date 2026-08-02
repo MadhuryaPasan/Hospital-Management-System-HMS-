@@ -1,4 +1,5 @@
 // user entity for database user table
+import { Role } from 'src/common/enums/role.enum';
 import {
   Column,
   Entity,
@@ -17,6 +18,13 @@ export class User {
 
   @Column({ unique: true })
   email: string;
+
+  @Column({
+    type: 'enum',
+    enum: Role,
+    default: Role.Patient,
+  })
+  role: Role;
 
   @Column()
   password: string;
