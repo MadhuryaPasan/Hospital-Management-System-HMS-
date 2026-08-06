@@ -2,6 +2,7 @@ import {
   ConflictException,
   Injectable,
   UnauthorizedException,
+  Logger,
 } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { RegisterDto } from './dto/register.dto';
@@ -12,6 +13,7 @@ import { Role } from 'src/common/enums/role.enum';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService, // for jwt authentication
@@ -21,6 +23,9 @@ export class AuthService {
     const existingUser = await this.usersService.findByEmail(registerDto.email);
     //cheking duplicate
     if (existingUser) {
+      this.logger.warn(
+        `Registration failed: Email already exists (${registerDto.email})`,
+      );
       throw new ConflictException('Email already exists');
     }
 
@@ -39,6 +44,8 @@ export class AuthService {
     //save the user
     const user = await this.usersService.create(userData);
 
+    this.logger.log(`New user registered: ${user.email} (${user.role})`);
+
     // remove the password from the response
     const { password, ...result } = user;
     return result;
@@ -48,6 +55,7 @@ export class AuthService {
     const user = await this.usersService.findByEmail(loginDto.email);
 
     if (!user) {
+      this.logger.warn(`Login failed: Unknown email (${loginDto.email})`);
       throw new UnauthorizedException('Invalid email or password');
     }
 
@@ -57,6 +65,7 @@ export class AuthService {
     );
 
     if (!isPasswordValid) {
+      this.logger.warn(`Login failed: Incorrect password (${loginDto.email})`);
       throw new UnauthorizedException('Invalid email or password');
     }
 
@@ -66,6 +75,7 @@ export class AuthService {
       email: user.email,
     };
     const accessTocken = await this.jwtService.signAsync(payload);
+    this.logger.log(`User logged in: ${user.email}`);
 
     return {
       access_token: accessTocken,
