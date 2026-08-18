@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { SafeUser } from './interfaces/safe-user.interface';
 
 @Injectable()
 export class UsersService {
@@ -13,6 +14,12 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
+
+  // this will used to remove the password from the response.
+  private toSafeUser(user: User): SafeUser{
+    const { password: _password, ...safeUser } = user;
+    return safeUser;
+  }
 
   // create user
   // async create(createUserDto: CreateUserDto) {
@@ -23,8 +30,10 @@ export class UsersService {
     // return 'This action adds a new user';
   }
 
-  async findAll() {
-    return this.userRepository.find();
+  async findAll(): Promise<SafeUser[]> {
+    const users = await this.userRepository.find();
+    return users.map((user) => this.toSafeUser(user));
+    // return this.userRepository.find();
     // return `This action returns all users`;
   }
 
